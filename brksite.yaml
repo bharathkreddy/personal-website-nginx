@@ -28,6 +28,7 @@ spec:
         path: /Users/bharathreddy/Desktop/BRK/kubetest/personal-website-nginx
 
 ---
+#Exposes a service in front of all pods and have a virtual ip for the service which is permanent and allows end users to interact with app.
 kind: Service
 apiVersion: v1
 metadata:
@@ -46,3 +47,42 @@ spec:
     version: '1.0'  # can use one or many
   # Create an HA proxy in the cloud provider with an External IP address - *Only supported by some cloud providers*
   type: NodePort
+
+---
+# Matches the no. of pods to the replicas mentioned. If we delete a pod, RC will match the no of running pods to replica numnber.
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: brkwebsite-rc
+  namespace: brk
+spec:
+  replicas: 2
+  selector: 
+    env: uat
+    version: '1.0'
+  template:
+    metadata:
+      labels:
+        env: uat
+        version: '1.0'
+      namespace: brk
+    spec:
+      # same as pod spec.
+      containers:
+        - 
+          name: brkwebsite-container
+          image: nginx:alpine
+          ports:
+            - 
+              containerPort: 80 
+              hostPort: 8080  
+              protocol: TCP 
+          volumeMounts:
+            -
+              mountPath: /usr/share/nginx/html
+              name: brkwebsite-volume
+      volumes:
+        -
+          name: brkwebsite-volume
+          hostPath:
+            path: /Users/bharathreddy/Desktop/BRK/kubetest/personal-website-nginx

@@ -10,5 +10,7 @@ run by using below command.
 1. Your system should have git cli,kubectl cli ,docker & Kubernetes installed.
 
 **Notes:**
+
 I have used a local volume mount, but generally a prefered way would be to use a persistant volume claim. 
+
 I have not used any secrets but should you use any - I would strongly advice use of secrets and configmaps to inject those.
